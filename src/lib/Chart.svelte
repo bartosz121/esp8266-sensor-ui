@@ -2,7 +2,8 @@
   import { onMount, onDestroy } from "svelte";
   import { chart } from "svelte-apexcharts";
 
-  import { chartId, sensorData } from "../stores.js";
+  import { chartId, sensorData, userBrowserLocale } from "../stores.js";
+  import { dateToFormattedString, toLocalTimezone } from "../utils.js"; // FIXME TIMEZONES!!!
 
   import en from "../locales/en.json";
   import pl from "../locales/pl.json";
@@ -52,13 +53,17 @@
     tooltip: {
       x: {
         format: "dd dddd HH:mm:ss",
+        formatter: (/** @type {string} */ value) => {
+          let date = new Date(value);
+          return dateToFormattedString($userBrowserLocale, date);
+        },
       },
     },
   };
 
   $: {
     chartData.series[0].data = $sensorData.map((item, i) => ({
-      x: new Date(item.timestamp).getTime(),
+      x: toLocalTimezone(item.timestamp).getTime(),
       y: item.temp,
     }));
   }
