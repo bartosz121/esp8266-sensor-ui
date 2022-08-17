@@ -1,5 +1,6 @@
 import axios from "axios";
 import { writable, readable } from "svelte/store";
+import { getBrowserLocale } from "./utils";
 
 async function fetchSensorData() {
   loading.set(true)
@@ -11,6 +12,8 @@ async function fetchSensorData() {
 
 export const chartId = writable("mainChart");
 export const loading = writable(false);
+
+export const userBrowserLocale = readable(getBrowserLocale())
 
 export const sensorData = readable(await fetchSensorData(), function start(set) {
   const interval = setInterval(async () => {
