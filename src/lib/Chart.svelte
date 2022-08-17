@@ -18,7 +18,7 @@
       id: "mainChart",
       type: "line",
       locales: [en, pl],
-      defaultLocale: "pl", // TODO pickup locale from browser
+      defaultLocale: "en", // TODO pickup locale from browser
       toolbar: {
         offsetY: null,
       },
