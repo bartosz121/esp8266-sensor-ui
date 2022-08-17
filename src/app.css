@@ -6,3 +6,7 @@
     margin-left: auto !important;
     margin-right: auto !important;
   }
+
+.apexcharts-tooltip {
+    text-transform: capitalize;
+}
