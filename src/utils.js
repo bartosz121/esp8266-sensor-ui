@@ -2,7 +2,7 @@ import axios from "axios";
 
 import { loading, userBrowserLocale } from "./stores.js";
 
-const localeStringOptions = { weekday: 'long', day: 'numeric', month: "short", hour: "2-digit", minute: "2-digit", second: "2-digit", };
+const defaultLocaleStringOptions = { weekday: 'long', day: 'numeric', month: "short", hour: "2-digit", minute: "2-digit", second: "2-digit", };
 
 
 export function getBrowserLocale() {
@@ -29,8 +29,9 @@ export function toLocalTimezone(timestamp) {
 /**
  * @param {string} userLocale
  * @param {Date} dt
+ * @param {object} localeStringOptions
  */
-export function dateToFormattedString(userLocale, dt) {
-  // @ts-ignore
-  return dt.toLocaleDateString(userLocale, localeStringOptions)
+export function dateToFormattedString(userLocale, dt, localeStringOptions = defaultLocaleStringOptions) {
+  let dtFormat = new Intl.DateTimeFormat(userLocale, localeStringOptions)
+  return dtFormat.format(dt)
 }
