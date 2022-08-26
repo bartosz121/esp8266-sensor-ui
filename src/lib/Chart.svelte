@@ -44,6 +44,14 @@
     ],
     xaxis: {
       type: "datetime",
+      labels: {
+        formatter: (/** @type {string} */ value) => {
+          let date = new Date(value);
+          return dateToFormattedString($userBrowserLocale, date, {
+            timeStyle: "short",
+          });
+        },
+      },
     },
     yaxis: {
       title: {
@@ -52,7 +60,6 @@
     },
     tooltip: {
       x: {
-        format: "dd dddd HH:mm:ss",
         formatter: (/** @type {string} */ value) => {
           let date = new Date(value);
           return dateToFormattedString($userBrowserLocale, date);
