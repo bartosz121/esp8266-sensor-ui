@@ -1,5 +1,26 @@
+<script>
+  export let size = "md";
+  export let extraCls = "";
+
+  /**
+   * @param {string} size
+   */
+  function getSizeCls(size) {
+    switch (size) {
+      case "sm":
+        return "w-8 h-8";
+      case "lg":
+        return "w-64 h-64";
+      default:
+        return "w-20 h-20";
+    }
+  }
+
+  let sizeCls = getSizeCls(size);
+</script>
+
 <div
-  class="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-64 w-64"
+  class={`loader ease-linear rounded-full border-8 border-t-8 border-gray-400 ${sizeCls} ${extraCls}`}
 />
 
 <style>
