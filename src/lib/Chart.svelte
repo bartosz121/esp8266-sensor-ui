@@ -76,6 +76,6 @@
   }
 </script>
 
-<div class="h-1/2 md:h-3/4">
+<div class="h-full w-full">
   <div use:chart={chartData} />
 </div>
