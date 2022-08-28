@@ -1,6 +1,5 @@
-import axios from "axios";
-
-import { loading, userBrowserLocale } from "./stores.js";
+import en from "./locales/en.json";
+import pl from "./locales/pl.json";
 
 const defaultLocaleStringOptions = { weekday: 'long', day: 'numeric', month: "short", hour: "2-digit", minute: "2-digit", second: "2-digit", };
 
@@ -16,6 +15,17 @@ export function getBrowserLocale() {
     return "en-US"
   }
 }
+
+/**
+ * @param {string} userLocale
+ */
+export function getLocaleValues(userLocale) {
+  if (userLocale == "pl-PL") {
+    return pl
+  }
+  return en
+}
+
 /**
  * @param {string} timestamp
  */
