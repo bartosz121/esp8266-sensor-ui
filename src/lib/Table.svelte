@@ -24,11 +24,10 @@
   };
 
   /**
-   * @param {number} n
    * @param {{ temp: string; }[]} data
    */
-  function getDiff(data, n) {
-    let x = data[n] ? parseFloat(data[n].temp) : null;
+  function getDiff(data) {
+    let x = data.at(-1) ? parseFloat(data.at(-1).temp) : null;
     let y = parseFloat(data[0].temp);
 
     if (x === null) {
@@ -56,8 +55,8 @@
 
   // reactive
   $: lastDataPoint = $sensorData[$sensorData.length - 1];
-  $: diff10min = getDiff($sensorData.slice(0, 10), 9);
-  $: diff1h = getDiff($sensorData.slice(0, 60), 59);
+  $: diff10min = getDiff($sensorData.slice(-10));
+  $: diff1h = getDiff($sensorData.slice(-60));
   $: promiseMaxT = getCalculate("max", $startTime, $endTime);
   $: promiseMinT = getCalculate("min", $startTime, $endTime);
   $: promiseAvgT = getCalculate("avg", $startTime, $endTime);
