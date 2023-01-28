@@ -45,3 +45,10 @@ export function dateToFormattedString(userLocale, dt, localeStringOptions = defa
   let dtFormat = new Intl.DateTimeFormat(userLocale, localeStringOptions)
   return dtFormat.format(dt)
 }
+
+export function getTimestampNow24hAgo() {
+  let dt = new Date()
+  dt.setDate(dt.getDate() - 1) // getDate returns day (numeric) - 1 to get date 24h ago
+  return dt.getTime()
+
+}

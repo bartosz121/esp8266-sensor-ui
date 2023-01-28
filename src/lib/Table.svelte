@@ -1,19 +1,15 @@
 <script>
-  import axios from "axios";
+  // @ts-nocheck
 
   import Spinner from "./Spinner.svelte";
-
-  import {
-    sensorData,
-    userBrowserLocale,
-    startTime,
-    endTime,
-  } from "../stores.js";
+  import { userBrowserLocale } from "../stores.js";
   import {
     toLocalTimezone,
     dateToFormattedString,
     getLocaleValues,
   } from "../utils.js";
+
+  import { useCalculateData, useSensorData } from "../api.js";
 
   const shortDataOptions = {
     day: "numeric",
@@ -37,29 +33,28 @@
     return x - y;
   }
 
-  /**
-   * @param {string} operation
-   * @param {number} [start] // timestamp
-   * @param {number} [end] // timestamp
-   */
-  async function getCalculate(operation, start, end) {
-    const res = await axios.get(
-      `${API_BASE_URL}/data/calculate?operation=${operation}&start=${start}&end=${end}`
-    );
-    return res.data.result;
-  }
-
-  // @ts-ignore
-  const API_BASE_URL = import.meta.env.VITE_API_BASE;
   let locale = getLocaleValues($userBrowserLocale);
 
+  // queries
+  const sensorData = useSensorData();
+  const sensorDataMax = useCalculateData("max");
+  const sensorDataMin = useCalculateData("min");
+  const sensorDataAvg = useCalculateData("avg");
+
   // reactive
-  $: lastDataPoint = $sensorData[$sensorData.length - 1];
-  $: diff10min = getDiff($sensorData.slice(-10));
-  $: diff1h = getDiff($sensorData.slice(-60));
-  $: promiseMaxT = getCalculate("max", $startTime, $endTime);
-  $: promiseMinT = getCalculate("min", $startTime, $endTime);
-  $: promiseAvgT = getCalculate("avg", $startTime, $endTime);
+  $: lastDataPoint = $sensorData.data[$sensorData.data.length - 1];
+  $: diff10min = getDiff($sensorData.data.slice(-10));
+  $: diff1h = getDiff($sensorData.data.slice(-60));
+  $: title = lastDataPoint
+    ? `Piec: ${lastDataPoint.temp}\u00b0C [${dateToFormattedString(
+        $userBrowserLocale,
+        toLocalTimezone(lastDataPoint.timestamp),
+        { hour: "2-digit", minute: "2-digit", second: "2-digit" }
+      )}]`
+    : "Piec";
+  $: {
+    document.title = title;
+  }
 </script>
 
 <div>
@@ -79,7 +74,7 @@
       <td class="text-center">{`${lastDataPoint.temp}\u00b0C`}</td>
     </tr>
     <tr class="bg-gray-200">
-      <td class="p-2" on:click={() => console.log($sensorData)}
+      <td class="p-2" on:click={() => console.log($sensorData.data)}
         >{locale.table.diff10min}</td
       >
       <td class="text-center"
@@ -95,37 +90,37 @@
     <tr class="bg-gray-200">
       <td class="p-2">{locale.table.maxT}</td>
       <td class="text-center">
-        {#await promiseMaxT}
+        {#if $sensorDataMax.isLoading}
           <Spinner size="sm" extraCls="mx-auto" />
-        {:then maxT}
-          <span>{`${maxT.toFixed(2)}\u00b0C`}</span>
-        {:catch error}
+        {:else if $sensorDataMax.error}
           <span>Error</span>
-        {/await}
+        {:else}
+          <span>{`${$sensorDataMax.data.result.toFixed(2)}\u00b0C`}</span>
+        {/if}
       </td>
     </tr>
     <tr class="">
       <td class="p-2">{locale.table.minT}</td>
       <td class="text-center">
-        {#await promiseMinT}
+        {#if $sensorDataMin.isLoading}
           <Spinner size="sm" extraCls="mx-auto" />
-        {:then minT}
-          <span>{`${minT.toFixed(2)}\u00b0C`}</span>
-        {:catch error}
+        {:else if $sensorDataMin.error}
           <span>Error</span>
-        {/await}
+        {:else}
+          <span>{`${$sensorDataMin.data.result.toFixed(2)}\u00b0C`}</span>
+        {/if}
       </td>
     </tr>
     <tr class="bg-gray-200">
       <td class="p-2">{locale.table.avgT}</td>
       <td class="text-center">
-        {#await promiseAvgT}
+        {#if $sensorDataAvg.isLoading}
           <Spinner size="sm" extraCls="mx-auto" />
-        {:then avgT}
-          <span>{`${avgT.toFixed(2)}\u00b0C`}</span>
-        {:catch error}
+        {:else if $sensorDataAvg.error}
           <span>Error</span>
-        {/await}
+        {:else}
+          <span>{`${$sensorDataAvg.data.result.toFixed(2)}\u00b0C`}</span>
+        {/if}
       </td>
     </tr>
   </table>

@@ -1,8 +1,11 @@
 <script>
+  // @ts-nocheck
+
   import { onMount, onDestroy } from "svelte";
   import { chart } from "svelte-apexcharts";
 
-  import { chartId, sensorData, userBrowserLocale } from "../stores.js";
+  import { chartId, userBrowserLocale } from "../stores.js";
+  import { useSensorData } from "../api.js";
   import { dateToFormattedString, toLocalTimezone } from "../utils.js"; // FIXME TIMEZONES!!!
 
   import en from "../locales/en.json";
@@ -11,6 +14,8 @@
   onDestroy(() => {
     chartData = null;
   });
+
+  const sensorData = useSensorData();
 
   let chartData = {
     chart: {
@@ -69,7 +74,7 @@
   };
 
   $: {
-    chartData.series[0].data = $sensorData.map((item, i) => ({
+    chartData.series[0].data = $sensorData.data.map((item, i) => ({
       x: toLocalTimezone(item.timestamp).getTime(),
       y: item.temp,
     }));
