@@ -20,8 +20,10 @@
     "vite-plugin-top-level-await": "^1.1.1"
   },
   "dependencies": {
+    "@sveltestack/svelte-query": "^1.6.0",
     "apexcharts": "^3.35.4",
     "axios": "^0.27.2",
+    "broadcast-channel": "^4.20.2",
     "svelte-apexcharts": "^1.0.2"
   }
 }
